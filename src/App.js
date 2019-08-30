@@ -1,25 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Fragment } from 'react';
+import {gql} from 'apollo-boost';
+import {useQuery} from '@apollo/react-hooks';
+
+const GET_ENCLOSURE_INFO = gql`
+  query getEnclosureInfo {
+    monkeyEnclosure @client {
+      hasMoat
+      numberOfMonkeys
+      numberOfTrees
+    }
+  }
+`;
 
 function App() {
+  const {data} = useQuery(GET_ENCLOSURE_INFO);
+  const enclosureInfo = data.monkeyEnclosure;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <h1>Information About Monkey Enclosure</h1>
+      <ul>
+        <li>
+          Does this enclosure have a moat? {enclosureInfo.hasMoat ? 'yes' : 'no'}
+        </li>
+        <li>
+          The number of monkeys in this enclosure: {enclosureInfo.numberOfMonkeys}
+        </li>
+        {enclosureInfo.numberOfTrees && (
+          <li>
+            The number of trees in this enclosure: {enclosureInfo.numberOfTrees}
+          </li>
+        )}
+      </ul>
+    </Fragment>
   );
 }
 
